@@ -1,0 +1,33 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+void fcfs(int arr[], int size) {
+    int head = 0;
+    int seek_count = 0;
+    int distance;
+
+    printf("Seek Sequence is:\n");
+
+    for (int i = 0; i < size; i++) {
+        distance = abs(arr[i] - head);
+        seek_count += distance;
+        head = arr[i];
+        printf("%d ", arr[i]);
+    }
+
+    printf("\nTotal number of seek operations = %d\n", seek_count);
+}
+
+int main() {
+    int arr[] = {176, 79, 34, 60, 92, 11, 41, 114};
+    int size = sizeof(arr) / sizeof(arr[0]);
+
+    fcfs(arr, size);
+
+    return 0;
+}
+
+Output:
+Seek Sequence is:
+176 79 34 60 92 11 41 114 
+Total number of seek operations = 560
