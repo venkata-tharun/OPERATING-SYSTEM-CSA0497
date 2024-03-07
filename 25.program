@@ -1,0 +1,70 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
+void createFile(const char *filename, mode_t mode) {
+    int fd = open(filename, O_CREAT | O_WRONLY, mode);
+    if (fd == -1) {
+        perror("Error creating file");
+        exit(EXIT_FAILURE);
+    }
+    close(fd);
+}
+
+void accessFile(const char *filename, int flags) {
+    int fd = open(filename, flags);
+    if (fd == -1) {
+        perror("Error accessing file");
+        exit(EXIT_FAILURE);
+    }
+    close(fd);
+}
+
+int main() {
+    createFile("file1", S_IRUSR | S_IWUSR | S_IXUSR); 
+    createFile("file2", S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP | S_IWGRP | S_IXGRP); 
+    createFile("file3", S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP | S_IWGRP | S_IXGRP | S_IROTH | S_IWOTH | S_IXOTH); 
+
+    printf("Accessing file1 as root:\n");
+    accessFile("file1", O_RDONLY);
+    accessFile("file1", O_WRONLY);
+    accessFile("file1", O_RDWR);
+    printf("Accessing file1 as user:\n");
+    setuid(1000); 
+    accessFile("file1", O_RDONLY);
+    accessFile("file1", O_WRONLY);
+    accessFile("file1", O_RDWR);
+
+    printf("Accessing file2 as root:\n");
+    accessFile("file2", O_RDONLY);
+    accessFile("file2", O_WRONLY);
+    accessFile("file2", O_RDWR);
+    printf("Accessing file2 as user:\n");
+    setuid(1000);
+    accessFile("file2", O_RDONLY);
+    accessFile("file2", O_WRONLY);
+    accessFile("file2", O_RDWR);
+
+    printf("Accessing file3 as root:\n");
+    accessFile("file3", O_RDONLY);
+    accessFile("file3", O_WRONLY);
+    accessFile("file3", O_RDWR);
+    printf("Accessing file3 as user:\n");
+    setuid(1000); 
+    accessFile("file3", O_RDONLY);
+    accessFile("file3", O_WRONLY);
+    accessFile("file3", O_RDWR);
+
+    return 0;
+}
+
+Output:
+Accessing file1 as root:
+Accessing file1 as user:
+Accessing file2 as root:
+Accessing file2 as user:
+Accessing file3 as root:
+Accessing file3 as user:
