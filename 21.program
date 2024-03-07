@@ -1,0 +1,61 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct block {
+    int data;
+    struct block* next;
+} Block;
+
+typedef struct file {
+    Block* first;
+    Block* last;
+} File;
+
+File* createFile() {
+    File* file = (File*)malloc(sizeof(File));
+    file->first = NULL;
+    file->last = NULL;
+    return file;
+}
+
+Block* createBlock(int data) {
+    Block* block = (Block*)malloc(sizeof(Block));
+    block->data = data;
+    block->next = NULL;
+    return block;
+}
+
+void addBlock(File* file, int data) {
+    Block* block = createBlock(data);
+    if (file->first == NULL) {
+        file->first = block;
+        file->last = block;
+    } else {
+        file->last->next = block;
+        file->last = block;
+    }
+}
+
+void displayFile(File* file) {
+    Block* current = file->first;
+    while (current != NULL) {
+        printf("%d -> ", current->data);
+        current = current->next;
+    }
+    printf("NULL\n");
+}
+
+int main() {
+    File* file = createFile();
+    addBlock(file, 1);
+    addBlock(file, 7);
+    addBlock(file, 11);
+    addBlock(file, 12);
+    addBlock(file, 3);
+    addBlock(file, 19);
+    displayFile(file);
+    return 0;
+}
+
+Output:
+1 -> 7 -> 11 -> 12 -> 3 -> 19 -> NULL
