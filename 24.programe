@@ -1,0 +1,72 @@
+#include <stdio.h>
+
+int main() {
+    int i, j, direction, currentHead, track, numTracks, seekCount = 0;
+    int queue[20], queueSize;
+
+    printf("Enter the number of tracks on the disk: ");
+    scanf("%d", &numTracks);
+
+    printf("Enter the initial head position: ");
+    scanf("%d", &currentHead);
+
+    printf("Enter the number of tracks to be serviced: ");
+    scanf("%d", &queueSize);
+
+    printf("Enter the tracks to be serviced:\n");
+    for (i = 0; i < queueSize; i++) {
+        scanf("%d", &queue[i]);
+    }
+
+    direction = 1;
+    for (i = 0; i < queueSize - 1; i++) {
+        for (j = 0; j < queueSize - i - 1; j++) {
+            if (queue[j] > queue[j + 1]) {
+                int temp = queue[j];
+                queue[j] = queue[j + 1];
+                queue[j + 1] = temp;
+            }
+        }
+    }
+    int nextStop = currentHead;
+    int queueIndex = 0;
+
+    while (queueIndex < queueSize || nextStop != currentHead) {
+        if (queueIndex < queueSize && queue[queueIndex] == nextStop) {
+            seekCount += absoluteValue(currentHead - nextStop);
+            currentHead = queue[queueIndex];
+            queueIndex++;
+        } else if (nextStop < numTracks && direction == 1) {
+            nextStop++;
+        } else if (nextStop > 0 && direction == 0) {
+            nextStop--;
+        } else {
+            direction = !direction;
+            if (direction == 1) {
+                nextStop = 0;
+            } else {
+                nextStop = numTracks - 1;
+            }
+        }
+    }
+
+    printf("Total number of seek operations = %d\n", seekCount);
+
+    return 0;
+}
+
+int absoluteValue(int x) {
+    if (x < 0) {
+        return -x;
+    } else {
+        return x;
+    }
+}
+
+Output:
+Enter the number of tracks on the disk: 2
+Enter the initial head position: 1
+Enter the number of tracks to be serviced: 1
+Enter the tracks to be serviced:
+2
+Total number of seek operations = 1
