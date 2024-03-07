@@ -1,0 +1,48 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define RECORD_SIZE 100
+struct Employee {
+    int id;
+    char name[50];
+    float salary;
+};
+
+void write_record(FILE *fp, int pos, struct Employee e) {
+    fseek(fp, pos * RECORD_SIZE, SEEK_SET);
+    fwrite(&e, RECORD_SIZE, 1, fp);
+}
+
+void read_record(FILE *fp, int pos, struct Employee *e) {
+    fseek(fp, pos * RECORD_SIZE, SEEK_SET);
+    fread(e, RECORD_SIZE, 1, fp);
+}
+int main() {
+    FILE *fp;
+    struct Employee e;
+    fp = fopen("employees.dat", "w+");
+    if (fp == NULL) {
+        printf("Error opening file\n");
+        exit(1);
+    }
+    strcpy(e.name, "John Doe");
+    e.id = 1;
+    e.salary = 50000;
+    write_record(fp, 0, e);
+
+    strcpy(e.name, "Jane Doe");
+    e.id = 2;
+    e.salary = 55000;
+    write_record(fp, 1, e);
+    rewind(fp);
+    for (int i = 0; i < 2; i++) {
+        fread(&e, RECORD_SIZE, 1, fp);
+        printf("Record %d: ID=%d Name=%s Salary=%.2f\n", i, e.id, e.name, e.salary);
+    }
+    fclose(fp);
+
+    return 0;
+}
+
+Output:
+Record 0: ID=1 Name=John Doe Salary=50000.00
